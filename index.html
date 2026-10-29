@@ -144,6 +144,26 @@ input[type="range"] { width: 100%; accent-color: var(--accent); height: 30px; ma
 .log li .tag { display: inline-block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 1px 6px; border-radius: 6px; background: var(--banner-ink); color: var(--banner-bg); margin-left: 4px; vertical-align: 1px; }
 .log .empty { padding: 14px; font-size: 13px; color: var(--ink-3); }
 
+.car-track { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.car-track::-webkit-scrollbar { display: none; }
+.car-track > * { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; }
+.car-nav { display: flex; align-items: center; justify-content: center; gap: 6px; height: 36px; }
+.car-nav button.arr { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; color: var(--ink-2); display: grid; place-items: center; font-size: 15px; line-height: 1; padding: 0; }
+.car-nav button.arr:disabled { opacity: .35; cursor: default; }
+.car-dots { display: flex; gap: 6px; padding: 0 6px; }
+.car-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: var(--line); cursor: pointer; }
+.car-dots button.on { background: var(--accent); width: 18px; border-radius: 4px; }
+.log .car-track { height: 96px; }
+.log .car-nav { border-top: 1px solid var(--line); }
+.slide { padding: 12px 16px; display: grid; gap: 2px; align-content: start; }
+.slide.assist { background: var(--assist); }
+.slide .st { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slide .sn { font-weight: 700; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slide .sa { font-size: 14px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slide .sa .tag { display: inline-block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 1px 6px; border-radius: 6px; background: var(--banner-ink); color: var(--banner-bg); margin-left: 6px; vertical-align: 1px; }
+.slide.empty { color: var(--ink-3); font-size: 14px; align-content: center; }
+.flagcar .car-track > * { padding: 2px 1px 2px 0; }
+.flagcar .flag { height: 100%; align-content: start; }
 .verdict { font-family: var(--font-head); font-size: 21px; line-height: 1.3; }
 .verdict strong { color: var(--accent); }
 .pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); margin-bottom: 8px; }
@@ -266,10 +286,10 @@ footer a { overflow-wrap: anywhere; }
     </div>
     <div id="elCard"></div>
     <div class="log" aria-live="off">
-      <div class="lh"><span>Registro dei giochi</span><span class="live" id="logLive">in diretta</span></div>
-      <ol id="logList"></ol>
+      <div class="lh"><span>Registro dei giochi</span><span class="live" id="logLive" style="visibility:hidden">in diretta</span></div>
+      <div class="car" id="logCar"></div>
     </div>
-    <p class="hint">In giallo: un adulto era vicino al gioco durante l'azione.</p>
+    <p class="hint">Scorri per i segnali precedenti. In giallo: un adulto era vicino al gioco.</p>
 
     <div class="block">
       <h3>La tua scelta e quella dei bambini</h3>
@@ -281,7 +301,7 @@ footer a { overflow-wrap: anywhere; }
     <div class="block">
       <h3>Segnalazioni per il nido</h3>
       <p class="sub">Generate automaticamente dai dati, ognuna con un rimedio. Il badge dice quanto spesso la segnalazione si ripete su 50 simulazioni con gli stessi parametri.</p>
-      <div class="flags" id="flags"></div>
+      <div class="car flagcar" id="flags"></div>
     </div>
     <div class="cta"><a class="btn" href="#perche">Perché? →</a></div>
   </section>
@@ -548,17 +568,62 @@ footer a { overflow-wrap: anywhere; }
     }
 
     // log
-    var logList = document.getElementById("logList");
-    function shortName(l) { return l.replace(" (fila alta)", " alta").replace(" (fila media)", " media").replace(" (fila bassa)", " bassa").replace(" in legno (", " (").replace(/\s*\((alta|bassa|medie|medie|media)\)/, " $1"); }
+    function Carousel(host, opts) {
+      var track = h("div", { class: "car-track", tabindex: "0", "aria-roledescription": "carosello", "aria-label": opts.label });
+      var nav = h("div", { class: "car-nav" });
+      var prev = h("button", { class: "arr", type: "button", "aria-label": "Precedente" }, "‹");
+      var next = h("button", { class: "arr", type: "button", "aria-label": "Successivo" }, "›");
+      var dots = h("div", { class: "car-dots" });
+      nav.appendChild(prev); nav.appendChild(dots); nav.appendChild(next);
+      host.appendChild(track); host.appendChild(nav);
+      var n = 0, cur = 0;
+      function idx() { return track.clientWidth ? Math.round(track.scrollLeft / track.clientWidth) : 0; }
+      function mark() {
+        cur = Math.max(0, Math.min(n - 1, idx()));
+        for (var i = 0; i < dots.children.length; i++) dots.children[i].classList.toggle("on", i === cur);
+        prev.disabled = cur <= 0; next.disabled = cur >= n - 1;
+      }
+      function go(i) { track.scrollTo({ left: i * track.clientWidth, behavior: reduceMotion ? "auto" : "smooth" }); }
+      prev.addEventListener("click", function () { go(cur - 1); });
+      next.addEventListener("click", function () { go(cur + 1); });
+      track.addEventListener("scroll", mark, { passive: true });
+      this.track = track;
+      this.set = function (slides, toStart) {
+        track.innerHTML = slides.join("");
+        if (slides.length !== n) {
+          n = slides.length;
+          dots.innerHTML = "";
+          for (var i = 0; i < n; i++) (function (i) { var d = h("button", { type: "button", "aria-label": "Vai a " + (i + 1) }); d.addEventListener("click", function () { go(i); }); dots.appendChild(d); })(i);
+        }
+        if (toStart) track.scrollLeft = 0;
+        mark();
+      };
+      // fix the height to the tallest slide so the page never jumps
+      this.fitHeight = function () {
+        track.style.height = "auto";
+        var mx = 0;
+        for (var i = 0; i < track.children.length; i++) mx = Math.max(mx, track.children[i].scrollHeight);
+        track.style.height = mx + "px";
+      };
+    }
+
+    // live signals: fixed-height carousel, newest first
+    var logCar = new Carousel(document.getElementById("logCar"), { label: "Segnali dei giochi" });
+    var lastKey = null;
+    function shortName(l) { return l.replace(" (fila alta)", " alta").replace(" (fila media)", " media").replace(" (fila bassa)", " bassa").replace(" in legno (", " (").replace(/\s*\((alta|bassa|medie|media)\)/, " $1"); }
     function renderLog(t) {
-      var rows = [];
-      for (var i = 0; i < events.length && events[i][0] <= t; i++) rows.push(events[i]);
-      rows = rows.slice(-6).reverse();
-      if (!rows.length) { logList.innerHTML = '<li class="empty">I bambini stanno entrando…</li>'; return; }
-      logList.innerHTML = rows.map(function (e) {
-        var el = elements[e[1]];
-        return '<li class="' + (e[6] ? "assist" : "") + '"><span class="t">' + mmss(e[0]) + "</span><span>" + esc(shortName(el.label)) + " · " + actions[e[2]] + " · " + e[3] + ' s · <span class="who">#' + e[4] + " " + BAND_TXT[e[5]] + "</span>" + (e[6] ? '<span class="tag">adulto</span>' : "") + "</span></li>";
-      }).join("");
+      var lastI = -1;
+      for (var i = 0; i < events.length && events[i][0] <= t; i++) lastI = i;
+      var key = lastI;
+      if (key === lastKey) return;
+      lastKey = key;
+      if (lastI < 0) { logCar.set(['<div class="slide empty">I bambini stanno entrando…</div>'], true); return; }
+      var slides = [];
+      for (var j = lastI; j >= 0 && slides.length < 6; j--) {
+        var e = events[j], el = elements[e[1]];
+        slides.push('<div class="slide' + (e[6] ? " assist" : "") + '"><div class="st">' + mmss(e[0]) + " · #" + e[4] + " " + BAND_TXT[e[5]] + '</div><div class="sn">' + esc(shortName(el.label)) + '</div><div class="sa">' + actions[e[2]] + " · " + e[3] + " s" + (e[6] ? '<span class="tag">adulto vicino</span>' : "") + "</div></div>");
+      }
+      logCar.set(slides, true);
     }
 
     // element mini card
@@ -612,14 +677,14 @@ footer a { overflow-wrap: anywhere; }
     var PAUSE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
     var rp = null;
     function setT(t) { tNow = Math.max(0, Math.min(T - 3, t)); slider.value = tNow; draw(); }
-    function stop() { if (rp) cancelAnimationFrame(rp); rp = null; playBtn.innerHTML = PLAY; playBtn.setAttribute("aria-label", "Riproduci"); live.hidden = true; }
+    function stop() { if (rp) cancelAnimationFrame(rp); rp = null; playBtn.innerHTML = PLAY; playBtn.setAttribute("aria-label", "Riproduci"); live.style.visibility = "hidden"; }
     function play() {
       if (tNow >= T - 4) setT(0);
-      playBtn.innerHTML = PAUSE; playBtn.setAttribute("aria-label", "Pausa"); live.hidden = false;
+      playBtn.innerHTML = PAUSE; playBtn.setAttribute("aria-label", "Pausa"); live.style.visibility = "visible";
       var last = null;
       function step(ts) {
         if (last == null) last = ts;
-        var adv = (ts - last) / 1000 * 60; // 1 minute per second
+        var adv = (ts - last) / 1000 * (T / 5); // whole session in ~5 s
         last = ts;
         setT(tNow + adv);
         if (tNow >= T - 3) { stop(); return; }
@@ -659,17 +724,20 @@ footer a { overflow-wrap: anywhere; }
     // flags with stability
     var kindLabel = { difficolta: "difficile", altezza: "altezza", opzioni: "opzioni", breve: "breve" };
     var flagsSorted = D.flags.slice().sort(function (a, b) { return (R.flag_sessions_pct[b.key] || 0) - (R.flag_sessions_pct[a.key] || 0); });
-    document.getElementById("flags").innerHTML = flagsSorted.map(function (f) {
+    var flagCar = new Carousel(document.getElementById("flags"), { label: "Segnalazioni" });
+    flagCar.set(flagsSorted.map(function (f) {
       var z = f.zone ? zoneById[f.zone] : null;
       var st = R.flag_sessions_pct[f.key] || 0;
       var stab = st >= 80 ? '<span class="stab hi">stabile: ' + st + "% delle simulazioni</span>" : '<span class="stab lo">in ' + st + "% delle simulazioni</span>";
       return '<article class="flag"><div class="t">' + (z ? '<span class="zd" style="background:' + z.color + '"></span>' : "") + "<span>" + esc(f.title) + "</span>" + stab + "</div>" +
         '<p class="x">' + esc(cap(f.text)) + ".</p>" + '<p class="fix">' + esc(cap(f.fix)) + "</p></article>";
-    }).join("");
+    }), true);
+    window.addEventListener("resize", function () { flagCar.fitHeight(); });
 
     var started = false;
     hooks.simulazione = function () {
       renderVerdict();
+      flagCar.fitHeight();
       resize();
       if (!started) { started = true; setT(0); if (!reduceMotion) play(); else setT(T - 3); }
       else draw();
@@ -734,12 +802,20 @@ footer a { overflow-wrap: anywhere; }
       prevPerche();
       if (vStarted) return; vStarted = true;
       var slot = document.getElementById("videoSlot"), ph = document.getElementById("videoPh");
-      var v = h("video", { playsinline: "", muted: "", loop: "", controls: "", preload: "metadata" });
-      v.muted = true; v.style.display = "none";
-      v.addEventListener("loadedmetadata", function () { v.style.display = "block"; ph.style.display = "none"; });
+      var v = h("video", { autoplay: "", muted: "", loop: "", playsinline: "", "webkit-playsinline": "", preload: "metadata", poster: "playground.webp", controls: "" });
+      v.muted = true; v.defaultMuted = true; v.playsInline = true; v.style.display = "none";
+      var inView = !("IntersectionObserver" in window);
+      function tryPlay() { if (!inView) return; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      v.addEventListener("loadedmetadata", function () { v.style.display = "block"; ph.style.display = "none"; tryPlay(); });
+      v.addEventListener("play", function () { if (!inView) v.pause(); });
       var s = h("source", { src: "video.mp4", type: "video/mp4" });
       s.addEventListener("error", function () { v.remove(); });
       v.appendChild(s); slot.insertBefore(v, ph);
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (ents) {
+          ents.forEach(function (en) { inView = en.isIntersecting; if (inView) tryPlay(); else if (!v.paused) v.pause(); });
+        }, { threshold: 0.35 }).observe(slot);
+      }
     };
 
     route();
