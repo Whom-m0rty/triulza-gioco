@@ -384,6 +384,12 @@ h1 .doodle, h2 .doodle { width: 26px; height: 26px; vertical-align: 0; }
 .squiggle { display: block; width: 110px; height: 12px; margin-top: 4px; color: var(--ink); }
 footer { border-top: 1.5px dashed var(--line); }
 footer b { font-family: var(--font-head); font-weight: 400; font-size: 20px; }
+.intro-video { position: fixed; inset: 0; z-index: 50; background: rgba(255,255,255,.96); display: flex; align-items: center; justify-content: center; padding: 16px; transition: opacity .35s; }
+.intro-video.out { opacity: 0; }
+.intro-video .iv-box { width: 100%; max-width: 960px; background: #fff; border: 1.5px solid #1A1A1A; border-radius: 14px; padding: 12px; }
+.intro-video .iv-head { display: flex; justify-content: space-between; align-items: center; font-family: "Patrick Hand", cursive; font-size: 24px; margin: 0 4px 8px; }
+.intro-video .iv-skip { font: inherit; font-size: 18px; background: #D4F2C4; border: 1.5px solid #1A1A1A; border-radius: 999px; padding: 4px 14px; cursor: pointer; }
+.intro-video video { width: 100%; display: block; border-radius: 8px; background: #000; }
 </style>
 </head>
 <body>
@@ -874,12 +880,37 @@ footer b { font-family: var(--font-head); font-weight: 400; font-size: 20px; }
     window.addEventListener("resize", function () { flagCar.fitHeight(); });
 
     var started = false;
+    function startSim() {
+      if (!started) { started = true; setT(0); if (!reduceMotion) play(); else setT(T - 3); }
+      else draw();
+    }
+    // Before the simulation: the demo video plays by itself, then slides to the statistics.
+    var introDone = false;
+    function showIntroVideo(done) {
+      var ov = document.createElement("div");
+      ov.className = "intro-video";
+      ov.innerHTML = '<div class="iv-box"><div class="iv-head">Come funziona<button type="button" class="iv-skip">Salta ›</button></div>' +
+        '<video autoplay muted playsinline webkit-playsinline preload="auto" poster="playground.webp"><source src="video.mp4" type="video/mp4"></video></div>';
+      document.body.appendChild(ov);
+      var v = ov.querySelector("video");
+      v.muted = true; v.playsInline = true;
+      var closed = false;
+      function close() {
+        if (closed) return; closed = true;
+        ov.classList.add("out");
+        setTimeout(function () { ov.remove(); done(); }, 350);
+      }
+      v.addEventListener("ended", close);
+      v.addEventListener("error", close, true);
+      ov.querySelector(".iv-skip").addEventListener("click", close);
+      var pr = v.play(); if (pr && pr.catch) pr.catch(function () { v.controls = true; });
+    }
     hooks.simulazione = function () {
       renderVerdict();
       flagCar.fitHeight();
       resize();
-      if (!started) { started = true; setT(0); if (!reduceMotion) play(); else setT(T - 3); }
-      else draw();
+      if (!introDone) { introDone = true; showIntroVideo(function () { window.scrollTo(0, 0); startSim(); }); return; }
+      startSim();
     };
 
     // =============== screen 3
