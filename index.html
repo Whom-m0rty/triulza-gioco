@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Il gioco che ascolta</title>
+<title>VOCI</title>
 <meta name="description" content="Parco sensoriale 0-3 anni: gli elementi contano il proprio uso, un sensore di profondità vede solo sagome. Demo con dati simulati da studi pubblicati.">
-<meta name="theme-color" content="#FBF7F1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171412" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2214%22 fill=%22%23D2553A%22/%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%225%22 fill=%22%23FFF0C2%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="playground.webp">
 <style>
 :root {
@@ -249,6 +249,142 @@ footer a { overflow-wrap: anywhere; }
 .theme-toggle { background: none; border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--ink-2); }
 @media (min-width: 560px) { .chips { grid-template-columns: repeat(3, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .screen, .cta .btn { animation: none; } .sim-banner .dot, .log .lh .live::before { animation: none; } }
+
+/* ===================== VOCI deck theme ===================== */
+:root {
+  --bg: #FFFFFF; --surface: #FFFFFF; --surface-2: #F4F7FA; --ink: #1A1A1A; --ink-2: #3E3E3E; --ink-3: #707070;
+  --line: #1A1A1A; --soft-line: #D9D9D9; --accent: #1A8C95; --accent-soft: #CFE6F7; --flag: #C8325A; --flag-soft: #F9D3DC;
+  --ok: #2F7A33; --ok-soft: #D4F2C4; --banner-bg: #FCEFB4; --banner-ink: #1A1A1A; --assist: #FCEFB4;
+  --grid: #DCEBF6; --teal: #93E1E4; --pink: #F9D3DC; --yellow: #FCEFB4; --blue: #CFE6F7; --lav: #E3DAF5; --mint: #D4F2C4; --lime: #DDF7B4;
+  --shadow: none; --radius: 14px;
+  --font-head: "Patrick Hand", "Comic Sans MS", "Chalkboard SE", cursive;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1C1E22; --surface: #24272C; --surface-2: #2C3036; --ink: #F1F1EE; --ink-2: #C9C9C4; --ink-3: #9A9A96;
+    --line: #D8D8D2; --soft-line: #3A3E44; --accent: #7FD9DE; --accent-soft: #23404A; --flag: #FF8FA8; --flag-soft: #4A2632;
+    --ok: #9BE39F; --ok-soft: #22402A; --banner-bg: #4A4320; --banner-ink: #FFF6CC; --assist: #3E3920; --grid: rgba(255,255,255,.05);
+    --pink: #5A3440; --yellow: #4A4320; --blue: #24405A; --lav: #3B3452; --mint: #2A4A2E; --lime: #3A4A22;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1C1E22; --surface: #24272C; --surface-2: #2C3036; --ink: #F1F1EE; --ink-2: #C9C9C4; --ink-3: #9A9A96;
+  --line: #D8D8D2; --soft-line: #3A3E44; --accent: #7FD9DE; --accent-soft: #23404A; --flag: #FF8FA8; --flag-soft: #4A2632;
+  --ok: #9BE39F; --ok-soft: #22402A; --banner-bg: #4A4320; --banner-ink: #FFF6CC; --assist: #3E3920; --grid: rgba(255,255,255,.05);
+  --pink: #5A3440; --yellow: #4A4320; --blue: #24405A; --lav: #3B3452; --mint: #2A4A2E; --lime: #3A4A22;
+}
+html { background: var(--bg); }
+body {
+  background-color: transparent;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px; background-position: -1px -1px;
+}
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .85;
+  background:
+    radial-gradient(38% 22% at -4% 30%, var(--pink) 0 60%, transparent 62%),
+    radial-gradient(30% 14% at 52% -3%, var(--yellow) 0 60%, transparent 62%),
+    radial-gradient(34% 20% at 104% 12%, var(--mint) 0 60%, transparent 62%),
+    radial-gradient(36% 18% at 104% 70%, var(--pink) 0 60%, transparent 62%),
+    radial-gradient(40% 14% at 18% 103%, var(--blue) 0 60%, transparent 62%),
+    radial-gradient(30% 16% at -6% 80%, var(--lav) 0 60%, transparent 62%),
+    radial-gradient(30% 12% at 10% -2%, var(--lav) 0 60%, transparent 62%);
+}
+main { position: relative; }
+h1, h2, h3, .verdict, .thesis .big, .thesis .claim, .video-ph strong, .todo-grid .v { font-family: var(--font-head); font-weight: 400; letter-spacing: 0; }
+h1 { font-size: clamp(34px, 9.6vw, 50px); line-height: 1.02; }
+h2 { font-size: clamp(30px, 8.4vw, 42px); line-height: 1.05; }
+h3, .block > h3 { font-size: 25px; line-height: 1.1; }
+.verdict { font-size: 25px; line-height: 1.15; }
+.verdict strong { color: var(--ink); background: linear-gradient(transparent 55%, var(--lime) 55%); }
+
+/* header */
+.voci-head { padding-top: 16px; padding-bottom: 2px; display: flex; align-items: center; gap: 12px; }
+.voci-title { position: relative; font-family: var(--font-head); font-size: 54px; line-height: .9; color: var(--teal); -webkit-text-stroke: 2.4px #1A1A1A; paint-order: stroke fill; letter-spacing: .02em; margin: 0; padding: 0 6px; text-decoration: none; }
+.voci-title .spk { position: absolute; width: 16px; height: 16px; color: var(--ink); }
+.voci-sub { font-family: var(--font-head); font-size: 15.5px; line-height: 1.15; background: var(--lime); color: #1A1A1A; padding: 5px 9px; border-radius: 6px; transform: rotate(-1.2deg); }
+
+/* labels as highlighter */
+.sim-banner { background: var(--yellow); color: var(--ink); border-bottom: 1.5px solid var(--line); font-family: var(--font-head); font-size: 15.5px; font-weight: 400; letter-spacing: .01em; }
+.sim-banner .dot { background: var(--ink); }
+.eyebrow { font-family: var(--font-head); font-weight: 400; font-size: 17px; letter-spacing: .02em; text-transform: none; color: #1A1A1A; background: var(--blue); padding: 1px 9px; border-radius: 4px; display: inline-block; }
+:root[data-theme="dark"] .eyebrow { color: var(--ink); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .eyebrow, :root:not([data-theme="light"]) .voci-sub { color: var(--ink); } }
+:root[data-theme="dark"] .voci-sub { color: var(--ink); }
+#s-simulazione .eyebrow { background: var(--yellow); }
+#s-perche .eyebrow { background: var(--pink); }
+.steps a { font-family: var(--font-head); font-size: 16px; font-weight: 400; border: 1.5px solid var(--line); color: var(--ink); background: var(--surface); }
+.steps a[aria-current="step"] { background: var(--teal); color: #1A1A1A; border-color: #1A1A1A; }
+.pill, .stab, .flag .t .k, .todo .tag, .log li .tag, .slide .sa .tag { font-family: var(--font-head); font-weight: 400; font-size: 14px; letter-spacing: .02em; text-transform: none; border-radius: 4px; color: #1A1A1A; }
+.pill { background: var(--mint); }
+.pill.miss { background: var(--pink); color: #1A1A1A; }
+.stab.hi { background: var(--mint); color: #1A1A1A; }
+.stab.lo { background: var(--surface-2); color: var(--ink-2); }
+.slide .sa .tag { background: var(--yellow); border: 1px solid #1A1A1A; color: #1A1A1A; }
+.todo .tag { background: var(--yellow); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pill, :root:not([data-theme="light"]) .stab.hi, :root:not([data-theme="light"]) .todo .tag { color: var(--ink); } }
+:root[data-theme="dark"] .pill, :root[data-theme="dark"] .stab.hi, :root[data-theme="dark"] .todo .tag { color: var(--ink); }
+
+/* cards: white, thin black border, no heavy shadow */
+.card, .elcard, .log, .chip, .flag, .tab, .counter { box-shadow: none; border: 1.5px solid var(--line); }
+.card { border-radius: 12px; }
+.flag { border-left-width: 1.5px; position: relative; }
+.flag::before { content: ""; position: absolute; left: 12px; top: -6px; width: 46px; height: 12px; background: var(--pink); opacity: .9; transform: rotate(-3deg); border-radius: 2px; }
+.research .card:nth-child(odd) { transform: rotate(-.6deg); }
+.research .card:nth-child(even) { transform: rotate(.6deg); }
+.fig { box-shadow: none; border: 1.5px solid var(--line); border-radius: 12px; }
+@media (max-width: 680px) { .bleed .fig { border-left: 0; border-right: 0; border-radius: 0; } }
+.chip { border-radius: 10px; font-family: var(--font-head); font-size: 18px; font-weight: 400; }
+.chip[aria-pressed="true"] { background: var(--yellow); border-color: var(--line); border-width: 2.5px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chip[aria-pressed="true"] { color: var(--ink); } }
+.btn { background: #1A1A1A; color: #fff; font-family: var(--font-head); font-weight: 400; font-size: 22px; border-radius: 12px; border: 1.5px solid #1A1A1A; box-shadow: 3px 3px 0 var(--teal); }
+.btn.ghost { background: var(--surface); color: var(--ink); border-color: var(--line); box-shadow: none; }
+:root[data-theme="dark"] .btn:not(.ghost) { background: var(--teal); color: #1A1A1A; box-shadow: 3px 3px 0 #000; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn:not(.ghost) { background: var(--teal); color: #1A1A1A; box-shadow: 3px 3px 0 #000; } }
+.seg { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; }
+.seg button { font-family: var(--font-head); font-size: 16.5px; font-weight: 400; border-radius: 9px; }
+.seg button[aria-pressed="true"] { background: var(--teal); color: #1A1A1A; box-shadow: none; }
+.playbtn { background: #1A1A1A; color: #fff; box-shadow: 2px 2px 0 var(--teal); }
+input[type="range"] { accent-color: #1A8C95; }
+.log .lh, .reach h4, .els h4, .elcard .m .l, .calib small, .law b, .metric .l { font-family: var(--font-head); font-weight: 400; font-size: 15px; letter-spacing: .02em; text-transform: none; }
+.log .lh { color: var(--ink); background: var(--blue); border-bottom: 1.5px solid var(--line); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .log .lh { color: var(--ink); } }
+.log .lh .live { color: var(--flag); }
+.log .car-nav { border-top: 1.5px solid var(--line); }
+.car-dots button.on { background: var(--ink); }
+.car-nav button.arr { border-color: var(--line); }
+.slide .sn { font-family: var(--font-head); font-weight: 400; font-size: 21px; }
+.elcard .m, .robust { background: var(--surface-2); }
+.robust { border: 1.5px dashed var(--line); }
+.rank-row .bar { border: 1px solid var(--soft-line); }
+.rank-row .bar span { opacity: .45; }
+.rank-row .bar em { font-family: var(--font-head); font-weight: 400; font-size: 17px; }
+.rank-row.me .bar { outline: 2.5px solid var(--ink); }
+.thesis { background: var(--pink); color: #1A1A1A; border: 1.5px solid var(--line); border-radius: 14px; transform: rotate(-.6deg); }
+.thesis .big { color: #1A1A1A; font-size: 76px; }
+.thesis .claim { font-size: 27px; }
+.thesis a { color: #1A1A1A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .thesis, :root:not([data-theme="light"]) .thesis .big, :root:not([data-theme="light"]) .thesis a { color: var(--ink); } }
+:root[data-theme="dark"] .thesis, :root[data-theme="dark"] .thesis .big, :root[data-theme="dark"] .thesis a { color: var(--ink); }
+.reason .ic { background: var(--yellow); color: #1A1A1A; border: 1.5px solid #1A1A1A; }
+.reason b, .flow-step b { font-family: var(--font-head); font-weight: 400; font-size: 18px; }
+.calib div { background: var(--surface-2); }
+.calib div + div { background: var(--mint); }
+.col { border: 1.5px solid var(--line); }
+.col h3 { font-size: 22px; }
+.col.save h3, .col.nosee h3 { color: var(--ink); }
+.law b { color: var(--ink); background: var(--lav); display: inline-block; padding: 0 7px; border-radius: 4px; }
+.flow-step .k { background: var(--teal); color: #1A1A1A; border: 1.5px solid #1A1A1A; font-family: var(--font-head); font-weight: 400; font-size: 18px; }
+.src { background: var(--blue); color: #1A1A1A; }
+.src::before { color: #1A1A1A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .src, :root:not([data-theme="light"]) .src::before { color: var(--ink); } }
+.video-slot { border: 1.5px solid var(--line); box-shadow: none; }
+.zn, .chip .n { border: 1.5px solid #1A1A1A; }
+.doodle { display: inline-block; width: 22px; height: 22px; vertical-align: -2px; margin-left: 6px; color: var(--ink); }
+h1 .doodle, h2 .doodle { width: 26px; height: 26px; vertical-align: 0; }
+.squiggle { display: block; width: 110px; height: 12px; margin-top: 4px; color: var(--ink); }
+footer { border-top: 1.5px dashed var(--line); }
+footer b { font-family: var(--font-head); font-weight: 400; font-size: 20px; }
 </style>
 </head>
 <body>
@@ -258,11 +394,15 @@ footer a { overflow-wrap: anywhere; }
   </div>
 </div>
 
+<header class="wrap voci-head">
+  <a class="voci-title" href="#indovina" aria-label="VOCI, torna all'inizio">VOCI<svg class="spk" style="left:-12px;top:-8px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c.8 5.5 2.6 8.6 9 10-6.4 1.4-8.2 4.5-9 10-.8-5.5-2.6-8.6-9-10 6.4-1.4 8.2-4.5 9-10z"/></svg><svg class="spk" style="right:-14px;top:-4px;width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c.8 5.5 2.6 8.6 9 10-6.4 1.4-8.2 4.5-9 10-.8-5.5-2.6-8.6-9-10 6.4-1.4 8.2-4.5 9-10z"/></svg><svg class="spk" style="right:-4px;bottom:-12px;width:11px;height:11px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c.8 5.5 2.6 8.6 9 10-6.4 1.4-8.2 4.5-9 10-.8-5.5-2.6-8.6-9-10 6.4-1.4 8.2-4.5 9-10z"/></svg></a>
+  <span class="voci-sub">Visione e Osservazione per la Comprensione dell'Infanzia</span>
+</header>
 <main>
   <!-- ============ 1. Indovina ============ -->
   <section class="screen wrap" id="s-indovina" data-route="indovina" aria-labelledby="h1">
     <div class="toprow"><div class="eyebrow">1 di 3 · Indovina</div><nav class="steps" aria-label="Schermate"><a href="#indovina">1</a><a href="#simulazione">2</a><a href="#perche">3</a></nav></div>
-    <h1 id="h1">Dove vanno per primi i bambini di 1–3 anni?</h1>
+    <h1 id="h1">Dove vanno per primi i bambini di 1–3 anni?<svg class="doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c.8 5.5 2.6 8.6 9 10-6.4 1.4-8.2 4.5-9 10-.8-5.5-2.6-8.6-9-10 6.4-1.4 8.2-4.5 9-10z"/></svg></h1>
     <p class="lead">Tocca una zona del parco.</p>
     <div class="bleed"><div class="fig" id="guessFig"></div></div>
     <div class="chips" id="guessChips" role="group" aria-label="Scegli una zona"></div>
@@ -272,7 +412,7 @@ footer a { overflow-wrap: anywhere; }
   <!-- ============ 2. Simulazione ============ -->
   <section class="screen wrap" id="s-simulazione" data-route="simulazione" aria-labelledby="h2" hidden>
     <div class="toprow"><div class="eyebrow">2 di 3 · Simulazione</div><nav class="steps" aria-label="Schermate"><a href="#indovina">1</a><a href="#simulazione">2</a><a href="#perche">3</a></nav></div>
-    <h2 id="h2">12 bambini, 2 adulti, 30 minuti</h2>
+    <h2 id="h2">12 bambini, 2 adulti, 30 minuti<svg class="doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/></svg></h2>
     <p class="lead">Ogni gioco registra le proprie azioni. Il sensore sul soffitto vede solo sagome e altezza. Tocca un gioco sulla mappa.</p>
     <div class="seg" role="group" aria-label="Vista">
       <button type="button" id="viewPhoto" aria-pressed="true">Come la vediamo noi</button>
@@ -309,7 +449,7 @@ footer a { overflow-wrap: anywhere; }
   <!-- ============ 3. Perché ============ -->
   <section class="screen wrap" id="s-perche" data-route="perche" aria-labelledby="h3" hidden>
     <div class="toprow"><div class="eyebrow">3 di 3 · Perché</div><nav class="steps" aria-label="Schermate"><a href="#indovina">1</a><a href="#simulazione">2</a><a href="#perche">3</a></nav></div>
-    <h2 id="h3">Perché gli adulti sbagliano</h2>
+    <h2 id="h3">Perché gli adulti sbagliano<svg class="doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c.8 5.5 2.6 8.6 9 10-6.4 1.4-8.2 4.5-9 10-.8-5.5-2.6-8.6-9-10 6.4-1.4 8.2-4.5 9-10z"/></svg></h2>
     <div class="thesis" style="margin-top:16px">
       <div class="big">3–4%</div>
       <p>della variabilità nell'attività misurata dei bambini è spiegata da quello che riferiscono i genitori.</p>
